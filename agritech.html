@@ -106,6 +106,7 @@ input.text:focus { outline: none; border-color: var(--leaf); box-shadow: 0 0 0 3
 .rules li:first-child { border-top: 0; padding-top: 0; }
 .rules li::before { content: counter(r, decimal-leading-zero); font-family: var(--f-mono); font-weight: 700; color: var(--leaf); font-size: 13px; padding-top: 1px; }
 .rules strong { display: block; }
+.es-line { display: block; font-style: italic; color: var(--leaf); font-size: 13px; margin-top: 3px; }
 .facts { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
 .facts div { font-size: 13px; color: var(--muted); }
 .facts b { display: block; font-family: var(--f-display); font-size: 22px; color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -258,7 +259,7 @@ tr:last-child td { border-bottom: 0; }
       <label class="lbl" for="nameInput">FULL NAME</label>
       <input class="text" id="nameInput" type="text" maxlength="60" placeholder="e.g. Santiago Pérez Mora" spellcheck="false">
       <div class="hint" id="nameHint">First name and last name.</div>
-      <label class="agree" for="agreeBox"><input type="checkbox" id="agreeBox"> <span>I read the rules and I will answer alone, without help.</span></label>
+      <label class="agree" for="agreeBox"><input type="checkbox" id="agreeBox"> <span>I read the rules and I will answer alone, without help.<em class="es-line">Leí las reglas y responderé solo(a), sin ayuda.</em></span></label>
       <button class="btn" id="startBtn" type="submit" disabled>Start the quiz</button>
       <div class="notice" id="startNotice" hidden></div>
       <div class="facts">
@@ -269,15 +270,15 @@ tr:last-child td { border-bottom: 0; }
       </div>
     </form>
     <div class="card pane">
-      <h2>Rules</h2>
-      <p class="sub">Please read them before you start.</p>
+      <h2>Rules · Reglas</h2>
+      <p class="sub">Please read them before you start. <em>Léelas antes de empezar.</em></p>
       <ol class="rules">
-        <li><span><strong>One attempt only.</strong> You cannot repeat the quiz.</span></li>
-        <li><span><strong>No going back.</strong> After you answer, you go to the next question.</span></li>
-        <li><span><strong>Instant feedback.</strong> You see if your answer is correct and the right answer.</span></li>
-        <li><span><strong>Stay on this page.</strong> If you change tab or app, you lose that question.</span></li>
-        <li><span><strong>Three exits = end.</strong> If you leave the page 3 times, the quiz closes.</span></li>
-        <li><span><strong>No reloading.</strong> If you reload during a question, that question counts as wrong.</span></li>
+        <li><span><strong>One attempt only.</strong> You cannot repeat the quiz.<em class="es-line">Solo tienes un intento. No puedes repetir el examen.</em></span></li>
+        <li><span><strong>No going back.</strong> After you answer, you go to the next question.<em class="es-line">No puedes volver atrás. Después de responder pasas a la siguiente pregunta.</em></span></li>
+        <li><span><strong>Instant feedback.</strong> You see if your answer is correct and the right answer.<em class="es-line">Verás si tu respuesta es correcta y cuál es la respuesta correcta.</em></span></li>
+        <li><span><strong>Stay on this page.</strong> If you change tab or app, you lose that question.<em class="es-line">No salgas de esta página. Si cambias de pestaña o de aplicación, pierdes esa pregunta.</em></span></li>
+        <li><span><strong>Three exits = end.</strong> If you leave the page 3 times, the quiz closes.<em class="es-line">Si sales de la página 3 veces, el examen se cierra.</em></span></li>
+        <li><span><strong>No reloading.</strong> If you reload during a question, that question counts as wrong.<em class="es-line">No recargues la página. Si recargas durante una pregunta, esa pregunta cuenta como incorrecta.</em></span></li>
       </ol>
     </div>
   </section>
@@ -338,7 +339,8 @@ tr:last-child td { border-bottom: 0; }
     <div class="lb">Anti-cheating warning</div>
     <div class="big" id="warnTitle"></div>
     <p id="warnText"></p>
-    <button class="btn" id="warnOk" type="button">I understand</button>
+    <p class="es-line" id="warnEs" style="margin:-8px 0 18px"></p>
+    <button class="btn" id="warnOk" type="button">I understand · Entiendo</button>
   </div>
 </div>
 
@@ -530,6 +532,9 @@ tr:last-child td { border-bottom: 0; }
     $("warnText").textContent = closed
       ? "You left the page 3 times. Your grade uses the answers you gave before."
       : `You left the quiz page, so this question counts as wrong. If you leave ${left === 1 ? "one more time" : left + " more times"}, the quiz ends.`;
+    $("warnEs").textContent = closed
+      ? "Saliste de la página 3 veces. El examen se cerró y tu nota usa las respuestas que diste."
+      : `Saliste de la página, así que esta pregunta cuenta como incorrecta. ${left === 1 ? "Si sales una vez más" : "Si sales " + left + " veces más"}, el examen se cierra.`;
     $("warnOverlay").hidden = false; $("warnOk").focus();
   }
   $("warnOk").addEventListener("click", () => { $("warnOverlay").hidden = true; });

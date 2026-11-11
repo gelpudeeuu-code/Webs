@@ -1,0 +1,671 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}</style></head><body><title>Colombian Instruments Quiz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one working card on a cream stage, banded top like the slide deck (sun / teal / clay). */
+:root {
+  --bg: #F7F2E7;
+  --surface: #FFFFFF;
+  --surface-2: #FBF8F1;
+  --ink: #1B2A44;
+  --muted: #5D6577;
+  --line: #E4DCCB;
+  --sun: #F2B634;
+  --teal: #2E7B74;
+  --clay: #C0453B;
+  --on-sun: #1B2A44;
+  --on-strong: #FFFFFF;
+  --ok-bg: #E3F1EF;
+  --bad-bg: #F8E4E1;
+  --shadow: 0 1px 2px rgba(27,42,68,.06), 0 8px 24px rgba(27,42,68,.08);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111A2B; --surface: #1A2740; --surface-2: #16223A; --ink: #F2EDE2; --muted: #A9B2C4;
+    --line: #2B3B5A; --sun: #F4C04A; --teal: #56AEA4; --clay: #E2705F; --on-sun: #1B2A44; --on-strong: #111A2B;
+    --ok-bg: #18393A; --bad-bg: #3D2229; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111A2B; --surface: #1A2740; --surface-2: #16223A; --ink: #F2EDE2; --muted: #A9B2C4;
+  --line: #2B3B5A; --sun: #F4C04A; --teal: #56AEA4; --clay: #E2705F; --on-sun: #1B2A44; --on-strong: #111A2B;
+  --ok-bg: #18393A; --bad-bg: #3D2229; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body.locked { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.bands { height: 10px; display: grid; grid-template-rows: 1fr 1fr 1fr; }
+.bands i:nth-child(1) { background: var(--sun); }
+.bands i:nth-child(2) { background: var(--teal); }
+.bands i:nth-child(3) { background: var(--clay); }
+.wrap {
+  max-width: 980px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.dots { display: inline-flex; gap: 4px; }
+.dots b { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.dots b:nth-child(1) { background: var(--sun); } .dots b:nth-child(2) { background: var(--teal); } .dots b:nth-child(3) { background: var(--clay); }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 12px;
+  padding: 14px 22px; font-weight: 700; font-size: 16px; background: var(--sun); color: var(--on-sun);
+  transition: transform .12s ease, filter .12s ease;
+}
+.btn:hover { filter: brightness(1.04); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; filter: none; }
+.btn.ghost { background: transparent; border: 1.5px solid var(--line); color: var(--ink); padding: 9px 14px; font-size: 14px; }
+.btn.small { padding: 7px 12px; font-size: 13px; border-radius: 9px; }
+.btn.danger { background: var(--clay); color: var(--on-strong); }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+
+/* ---------- start ---------- */
+.start { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; align-items: start; }
+.start > * { min-width: 0; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(34px, 6vw, 58px); line-height: .98; letter-spacing: -.02em; margin: 10px 0 16px; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--clay); }
+.lede { color: var(--muted); font-size: 17px; max-width: 46ch; margin: 0 0 22px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; max-width: 460px; }
+.fact { border-top: 3px solid var(--sun); padding-top: 8px; }
+.fact:nth-child(2) { border-color: var(--teal); } .fact:nth-child(3) { border-color: var(--clay); }
+.fact strong { display: block; font-family: var(--f-display); font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.fact span { font-size: 13px; color: var(--muted); }
+.regions { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: 13px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--muted); }
+.chip b { color: var(--ink); font-weight: 600; }
+
+.entry { padding: 26px; }
+.entry h2 { font-family: var(--f-display); font-size: 22px; margin: 0 0 4px; }
+.entry p.sub { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+label.lbl { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+input.text {
+  width: 100%; font: inherit; font-size: 17px; padding: 13px 14px; border-radius: 12px; border: 1.5px solid var(--line);
+  background: var(--surface-2); color: var(--ink); -webkit-user-select: text; user-select: text;
+}
+input.text:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 25%, transparent); }
+.hint { font-size: 13px; color: var(--muted); margin-top: 6px; min-height: 20px; }
+.hint.err { color: var(--clay); font-weight: 600; }
+.rules { list-style: none; padding: 0; margin: 18px 0 20px; display: grid; gap: 9px; }
+.rules li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; font-size: 14px; line-height: 1.4; }
+.rules li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--sun); margin-top: 6px; margin-left: 4px; }
+.rules li:nth-child(3n+2)::before { background: var(--teal); } .rules li:nth-child(3n)::before { background: var(--clay); }
+.agree { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin-bottom: 18px; }
+.agree input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--teal); flex: none; }
+.entry .btn { width: 100%; }
+.notice { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); border: 1px dashed var(--line); font-size: 14px; color: var(--muted); }
+
+/* ---------- quiz ---------- */
+.qhead { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.who { flex: 1 1 auto; min-width: 0; }
+.who .n { font-weight: 700; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who .c { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.warns { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.warns i { width: 12px; height: 12px; border-radius: 3px; border: 1.5px solid var(--line); display: block; }
+.warns i.on { background: var(--clay); border-color: var(--clay); }
+.timer { position: relative; width: 58px; height: 58px; flex: none; }
+.timer svg { width: 58px; height: 58px; transform: rotate(-90deg); }
+.timer circle { fill: none; stroke-width: 6; }
+.timer .track { stroke: var(--line); }
+.timer .arc { stroke: var(--teal); stroke-linecap: round; transition: stroke .3s; }
+.timer.low .arc { stroke: var(--clay); }
+.timer span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-weight: 600; font-size: 16px; font-variant-numeric: tabular-nums; }
+.track25 { display: grid; grid-template-columns: repeat(25, minmax(0,1fr)); gap: 3px; margin-bottom: 22px; }
+.track25 i { height: 8px; border-radius: 3px; background: var(--line); display: block; }
+.track25 i.ok { background: var(--teal); } .track25 i.bad { background: var(--clay); } .track25 i.now { background: var(--sun); }
+
+.qcard { padding: clamp(20px, 4vw, 36px); }
+.qnum { font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--teal); letter-spacing: .04em; }
+.qtext { font-family: var(--f-display); font-weight: 600; font-size: clamp(22px, 3.4vw, 30px); line-height: 1.2; margin: 8px 0 24px; text-wrap: balance; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.opt {
+  display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 12px; text-align: left; min-height: 64px;
+  padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--surface-2);
+  font-size: 16px; font-weight: 500; transition: border-color .12s, background .12s, transform .12s;
+}
+.opt:hover:not(:disabled) { border-color: var(--teal); transform: translateY(-1px); }
+.opt .k { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-family: var(--f-mono); font-weight: 600; font-size: 14px; background: var(--surface); border: 1px solid var(--line); }
+.opt:disabled { cursor: default; }
+.opt.right { border-color: var(--teal); background: var(--ok-bg); }
+.opt.right .k { background: var(--teal); color: var(--on-strong); border-color: var(--teal); }
+.opt.wrong { border-color: var(--clay); background: var(--bad-bg); }
+.opt.wrong .k { background: var(--clay); color: var(--on-strong); border-color: var(--clay); }
+.opt.dim { opacity: .55; }
+
+.fb { margin-top: 20px; border-radius: 16px; padding: 16px 18px; display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
+.fb > div { min-width: 0; }
+.fb.ok { background: var(--ok-bg); border: 1.5px solid var(--teal); }
+.fb.bad { background: var(--bad-bg); border: 1.5px solid var(--clay); }
+.fb h3 { margin: 0 0 4px; font-family: var(--f-display); font-size: 20px; }
+.fb.ok h3 { color: var(--teal); } .fb.bad h3 { color: var(--clay); }
+.fb p { margin: 0; font-size: 15px; }
+.fb p + p { margin-top: 4px; color: var(--muted); font-size: 14px; }
+
+/* ---------- result ---------- */
+.result { padding: clamp(22px, 4vw, 40px); display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: center; }
+.result > * { min-width: 0; }
+.gradeBox { width: 210px; height: 210px; border-radius: 50%; display: grid; place-items: center; text-align: center; position: relative; }
+.gradeBox .inner { width: 172px; height: 172px; border-radius: 50%; background: var(--surface); display: grid; place-content: center; }
+.gradeBox strong { font-family: var(--f-display); font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+.gradeBox span { color: var(--muted); font-size: 14px; }
+.pill { display: inline-block; padding: 5px 12px; border-radius: 999px; font-weight: 700; font-size: 13px; letter-spacing: .03em; }
+.pill.pass { background: var(--ok-bg); color: var(--teal); }
+.pill.fail { background: var(--bad-bg); color: var(--clay); }
+.result h2 { font-family: var(--f-display); font-size: clamp(26px, 4vw, 36px); margin: 10px 0 6px; line-height: 1.1; text-wrap: balance; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+.stat { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.stat b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--muted); }
+.grid25 { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; margin: 6px 0 16px; max-width: 460px; }
+.grid25 i { aspect-ratio: 1; max-width: 100%; border-radius: 6px; display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; font-family: var(--f-mono); color: var(--on-strong); }
+.grid25 i.ok { background: var(--teal); } .grid25 i.bad { background: var(--clay); }
+.code { font-family: var(--f-mono); font-weight: 600; font-size: 15px; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 10px; padding: 8px 12px; display: inline-block; }
+.meta { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+/* ---------- overlays ---------- */
+.overlay { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, var(--ink) 55%, transparent); display: grid; place-items: center;
+  padding: 16px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px)); }
+.modal { max-width: 440px; width: 100%; padding: 26px; text-align: center; }
+.modal .big { font-family: var(--f-display); font-size: 26px; margin: 6px 0 8px; color: var(--clay); }
+.modal p { margin: 0 0 18px; color: var(--muted); }
+
+.panel { position: fixed; inset: 0; z-index: 40; background: var(--bg); overflow-y: auto; }
+.panel .wrap { padding-block: 24px 48px; }
+.panel h2 { font-family: var(--f-display); font-size: 28px; margin: 0; }
+.summary { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin: 16px 0 18px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 720px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-2); }
+td.num { font-variant-numeric: tabular-nums; font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+.empty { padding: 28px; text-align: center; color: var(--muted); }
+
+@media (max-width: 760px) {
+  .start { grid-template-columns: 1fr; }
+  .opts { grid-template-columns: 1fr; }
+  .result { grid-template-columns: 1fr; justify-items: start; }
+  .gradeBox { width: 170px; height: 170px; } .gradeBox .inner { width: 138px; height: 138px; } .gradeBox strong { font-size: 50px; }
+  .summary { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .fb { grid-template-columns: 1fr; }
+  .fb .btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="bands" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><span class="dots" aria-hidden="true"><b></b><b></b><b></b></span> English Quiz · A2</div>
+    <button class="btn ghost" id="teacherBtn" hidden>Teacher results</button>
+  </div>
+
+  <!-- START -->
+  <section id="vStart" class="start">
+    <div>
+      <div class="eyebrow">Past and present</div>
+      <h1>Musical Instruments in <em>Colombia</em></h1>
+      <p class="lede">Answer 25 questions about the presentation: ocarinas, flutes and drums from the past, and the accordion, tiple, marimba de chonta and gaita today.</p>
+      <div class="facts">
+        <div class="fact"><strong>25</strong><span>questions</span></div>
+        <div class="fact"><strong>45 s</strong><span>per question</span></div>
+        <div class="fact"><strong>5.0</strong><span>top grade</span></div>
+      </div>
+      <div class="regions" aria-label="Topics">
+        <span class="chip"><b>Caribbean</b> · accordion, gaita</span>
+        <span class="chip"><b>Pacific</b> · marimba de chonta</span>
+        <span class="chip"><b>Andean</b> · tiple</span>
+      </div>
+    </div>
+
+    <form class="card entry" id="startForm" autocomplete="off">
+      <h2>Before you start</h2>
+      <p class="sub">Write your full name. Your teacher will see it with your grade.</p>
+      <label class="lbl" for="nameInput">Full name</label>
+      <input class="text" id="nameInput" type="text" maxlength="60" placeholder="e.g. Laura Gómez Ríos" spellcheck="false">
+      <div class="hint" id="nameHint">First name and last name.</div>
+      <ul class="rules">
+        <li>You have one attempt. You cannot go back to a question.</li>
+        <li>Each question has 45 seconds. When time ends, the answer counts as wrong.</li>
+        <li>After each answer you see if it is correct and the right answer.</li>
+        <li>Do not leave this page. If you change tab or app, you lose that question.</li>
+        <li>If you leave the page 3 times, the quiz ends.</li>
+        <li>Reloading the page during a question counts that question as wrong.</li>
+      </ul>
+      <label class="agree" for="agreeBox"><input type="checkbox" id="agreeBox"> <span>I understand the rules and I will answer alone.</span></label>
+      <button class="btn" id="startBtn" type="submit" disabled>Start the quiz</button>
+      <div class="notice" id="startNotice" hidden></div>
+    </form>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="vQuiz" hidden>
+    <div class="qhead">
+      <div class="who"><div class="n" id="qName"></div><div class="c" id="qCount"></div></div>
+      <div class="warns" title="Times you left the page"><span>Exits</span><i></i><i></i><i></i></div>
+      <div class="timer" id="timer" aria-label="Time left">
+        <svg viewBox="0 0 58 58" aria-hidden="true"><circle class="track" cx="29" cy="29" r="25"></circle><circle class="arc" id="arc" cx="29" cy="29" r="25"></circle></svg>
+        <span id="tNum">45</span>
+      </div>
+    </div>
+    <div class="track25" id="track25" aria-hidden="true"></div>
+    <div class="card qcard">
+      <div class="qnum" id="qNum"></div>
+      <div class="qtext" id="qText"></div>
+      <div class="opts" id="opts"></div>
+      <div class="fb" id="fb" hidden>
+        <div><h3 id="fbTitle"></h3><p id="fbMain"></p><p id="fbExp"></p></div>
+        <button class="btn" id="nextBtn" type="button">Next question</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="vResult" hidden>
+    <div class="card result">
+      <div class="gradeBox" id="gradeBox"><div class="inner"><strong id="rGrade">0.0</strong><span>out of 5.0</span></div></div>
+      <div>
+        <span class="pill" id="rPill"></span>
+        <h2 id="rTitle"></h2>
+        <div id="rWho" style="color:var(--muted)"></div>
+        <div class="stats">
+          <div class="stat"><b id="rCorrect"></b><span>correct answers</span></div>
+          <div class="stat"><b id="rPct"></b><span>score</span></div>
+          <div class="stat"><b id="rExits"></b><span>page exits</span></div>
+        </div>
+        <div class="grid25" id="rGrid" aria-label="Your answers"></div>
+        <div>Result code: <span class="code" id="rCode"></span></div>
+        <div class="meta" id="rMeta"></div>
+        <div class="meta" id="rSaved"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- warning modal -->
+<div class="overlay" id="warnOverlay" hidden>
+  <div class="card modal" role="alertdialog" aria-modal="true" aria-labelledby="warnTitle">
+    <div class="eyebrow">Anti-cheating warning</div>
+    <div class="big" id="warnTitle"></div>
+    <p id="warnText"></p>
+    <button class="btn" id="warnOk" type="button">I understand</button>
+  </div>
+</div>
+
+<!-- teacher panel -->
+<div class="panel" id="panel" hidden>
+  <div class="bands" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <div class="topbar">
+      <div><div class="eyebrow">Only you can see this</div><h2>Class results</h2></div>
+      <button class="btn ghost" id="panelClose" type="button">Back to quiz</button>
+    </div>
+    <div class="summary">
+      <div class="stat"><b id="sCount">0</b><span>finished</span></div>
+      <div class="stat"><b id="sAvg">–</b><span>class average</span></div>
+      <div class="stat"><b id="sPass">–</b><span>grade 3.0 or more</span></div>
+      <div class="stat"><b id="sProg">0</b><span>started, not finished</span></div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Name</th><th>Grade</th><th>Correct</th><th>Exits</th><th>Status</th><th>Finished</th><th>Code</th><th></th></tr></thead>
+        <tbody id="rows"><tr><td colspan="8" class="empty">Loading results…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="meta" id="panelNote">Reset removes a student's attempt so they can take the quiz again.</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const ENC = "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";
+  const KEY = "rv-tiple-gaita-chonta-2026";
+  const TOTAL = 25, SECS = 45, MAX_EXITS = 3, LS = "colombia-instruments-quiz-v1";
+  const $ = (id) => document.getElementById(id);
+
+  function decode() {
+    const bin = atob(ENC), k = new TextEncoder().encode(KEY), out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i) ^ k[i % k.length];
+    return JSON.parse(new TextDecoder().decode(out));
+  }
+  const BANK = decode();
+
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const range = (n) => Array.from({ length: n }, (_, i) => i);
+  const grade = (c) => (Math.round(c / TOTAL * 50) / 10).toFixed(1);
+  const cleanName = (s) => s.replace(/\s+/g, " ").trim();
+  function hash(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36).toUpperCase().padStart(7, "0"); }
+
+  let S = null;              // exam state
+  let timerId = null;
+  let db = null, user = null, myId = null, saveOk = null;
+
+  const save = () => { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} };
+  const load = () => { try { const t = localStorage.getItem(LS); return t ? JSON.parse(t) : null; } catch (e) { return null; } };
+
+  function show(view) { for (const v of ["vStart", "vQuiz", "vResult"]) $(v).hidden = v !== view; document.body.classList.toggle("locked", view !== "vStart"); }
+
+  /* ---------- start ---------- */
+  const nameInput = $("nameInput"), agree = $("agreeBox"), startBtn = $("startBtn");
+  let blocked = false;
+  function validName() { const n = cleanName(nameInput.value); return n.length >= 5 && n.split(" ").length >= 2 && /^[\p{L}' .-]+$/u.test(n); }
+  function refreshStart() {
+    const ok = validName();
+    const hint = $("nameHint");
+    if (nameInput.value && !ok) { hint.textContent = "Write your first name and last name (letters only)."; hint.className = "hint err"; }
+    else { hint.textContent = "First name and last name."; hint.className = "hint"; }
+    startBtn.disabled = blocked || !(ok && agree.checked);
+  }
+  nameInput.addEventListener("input", refreshStart);
+  agree.addEventListener("change", refreshStart);
+  $("startForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (startBtn.disabled) return;
+    S = {
+      v: 1, name: cleanName(nameInput.value), order: shuffle(range(BANK.length)).slice(0, TOTAL), opt: [],
+      answers: [], idx: 0, phase: "question", exits: 0, startedAt: Date.now(), qStart: Date.now(), finishedAt: null, ended: null
+    };
+    S.opt = S.order.map((qi) => BANK[qi].tf ? [0, 1].sort((a, b) => BANK[qi].o[a] === "True" ? -1 : 1) : shuffle(range(BANK[qi].o.length)));
+    save();
+    remoteStart();
+    renderQuiz();
+  });
+
+  /* ---------- quiz ---------- */
+  const track = $("track25");
+  for (let i = 0; i < TOTAL; i++) track.appendChild(document.createElement("i"));
+  const ARC = 2 * Math.PI * 25;
+  $("arc").style.strokeDasharray = ARC;
+
+  function current() { const qi = S.order[S.idx]; return { q: BANK[qi], perm: S.opt[S.idx] }; }
+  const correctPos = (perm) => perm.indexOf(0);
+
+  function renderQuiz() {
+    show("vQuiz");
+    const { q, perm } = current();
+    $("qName").textContent = S.name;
+    $("qCount").textContent = `Question ${S.idx + 1} of ${TOTAL} · ${S.answers.filter((a) => a.ok).length} correct so far`;
+    $("qNum").textContent = `QUESTION ${String(S.idx + 1).padStart(2, "0")}`;
+    $("qText").textContent = q.q;
+    [...document.querySelectorAll(".warns i")].forEach((el, i) => el.classList.toggle("on", i < S.exits));
+    [...track.children].forEach((el, i) => { el.className = i < S.answers.length ? (S.answers[i].ok ? "ok" : "bad") : (i === S.idx ? "now" : ""); });
+    const box = $("opts"); box.textContent = "";
+    perm.forEach((oi, pos) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "opt"; b.dataset.pos = pos;
+      const k = document.createElement("span"); k.className = "k"; k.textContent = "ABCD"[pos];
+      const t = document.createElement("span"); t.textContent = q.o[oi];
+      b.append(k, t);
+      b.addEventListener("click", () => answer(pos, "answer"));
+      box.appendChild(b);
+    });
+    if (S.phase === "feedback") paintFeedback();
+    else { $("fb").hidden = true; startTimer(); }
+  }
+
+  function startTimer() {
+    stopTimer();
+    const tick = () => {
+      const left = Math.max(0, SECS - (Date.now() - S.qStart) / 1000);
+      $("tNum").textContent = Math.ceil(left);
+      $("arc").style.strokeDashoffset = ARC * (1 - left / SECS);
+      $("timer").classList.toggle("low", left <= 10);
+      if (left <= 0) answer(-1, "time");
+    };
+    tick(); timerId = setInterval(tick, 200);
+  }
+  function stopTimer() { if (timerId) clearInterval(timerId); timerId = null; }
+
+  function answer(pos, why) {
+    if (!S || S.phase !== "question") return;
+    stopTimer();
+    const { perm } = current();
+    S.answers.push({ p: pos, ok: pos === correctPos(perm), why });
+    S.phase = "feedback";
+    save();
+    paintFeedback();
+  }
+
+  function paintFeedback() {
+    const { q, perm } = current();
+    const a = S.answers[S.idx], cp = correctPos(perm);
+    [...$("opts").children].forEach((b, pos) => {
+      b.disabled = true;
+      if (pos === cp) b.classList.add("right");
+      else if (pos === a.p) b.classList.add("wrong");
+      else b.classList.add("dim");
+    });
+    const fb = $("fb");
+    fb.className = "fb " + (a.ok ? "ok" : "bad");
+    $("fbTitle").textContent = a.ok ? "Correct!" : ({ time: "Time is up", left: "You left the page", reload: "Page reloaded", answer: "Incorrect" }[a.why] || "Incorrect");
+    $("fbMain").textContent = a.ok ? "Well done." : `The correct answer is: ${"ABCD"[cp]}. ${q.o[0]}`;
+    $("fbExp").textContent = q.e;
+    const last = S.idx === TOTAL - 1;
+    $("nextBtn").textContent = last ? "See my grade" : "Next question";
+    fb.hidden = false;
+    [...track.children].forEach((el, i) => { el.className = i < S.answers.length ? (S.answers[i].ok ? "ok" : "bad") : ""; });
+    $("qCount").textContent = `Question ${S.idx + 1} of ${TOTAL} · ${S.answers.filter((x) => x.ok).length} correct so far`;
+    $("timer").classList.remove("low");
+    setTimeout(() => $("nextBtn").focus({ preventScroll: true }), 30);
+  }
+
+  $("nextBtn").addEventListener("click", next);
+  function next() {
+    if (!S || S.phase !== "feedback") return;
+    if (S.idx >= TOTAL - 1) return finish("completed");
+    S.idx++; S.phase = "question"; S.qStart = Date.now();
+    save(); renderQuiz();
+    window.scrollTo({ top: 0 });
+  }
+
+  function finish(reason) {
+    stopTimer();
+    while (S.answers.length < TOTAL) S.answers.push({ p: -1, ok: false, why: "closed" });
+    S.idx = TOTAL - 1; S.phase = "done"; S.ended = reason; S.finishedAt = Date.now();
+    S.correct = S.answers.filter((a) => a.ok).length;
+    S.code = hash(`${S.name}|${S.correct}|${S.exits}|${S.finishedAt}`).slice(0, 4) + "-" + hash(`${S.finishedAt}|${S.name}`).slice(0, 4);
+    save();
+    remoteFinish();
+    renderResult();
+  }
+
+  function renderResult(r) {
+    r = r || S;
+    show("vResult");
+    const c = r.correct, g = grade(c), pct = Math.round(c / TOTAL * 100), pass = Number(g) >= 3;
+    $("rGrade").textContent = g;
+    $("gradeBox").style.background = `conic-gradient(${pass ? "var(--teal)" : "var(--clay)"} ${pct}%, var(--line) 0)`;
+    $("rPill").className = "pill " + (pass ? "pass" : "fail");
+    $("rPill").textContent = pass ? "PASSED" : "NOT PASSED";
+    $("rTitle").textContent = c === TOTAL ? "Perfect! All 25 answers are correct." : pass ? "Good job! You passed the quiz." : "Keep practicing. Review the presentation again.";
+    $("rWho").textContent = r.name;
+    $("rCorrect").textContent = `${c} / ${TOTAL}`;
+    $("rPct").textContent = pct + "%";
+    $("rExits").textContent = `${r.exits} / ${MAX_EXITS}`;
+    const grid = $("rGrid"); grid.textContent = "";
+    const marks = r.answers ? r.answers.map((a) => a.ok) : (r.marks || "").split("").map((x) => x === "1");
+    marks.forEach((ok, i) => { const el = document.createElement("i"); el.className = ok ? "ok" : "bad"; el.textContent = i + 1; el.title = `Question ${i + 1}: ${ok ? "correct" : "wrong"}`; grid.appendChild(el); });
+    $("rCode").textContent = r.code || "—";
+    const d = new Date(r.finishedAt);
+    const mins = Math.max(1, Math.round((r.finishedAt - r.startedAt) / 60000));
+    $("rMeta").textContent = `Finished ${d.toLocaleDateString()} at ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · ${mins} min` + (r.ended === "exits" ? " · Quiz closed: left the page 3 times." : "") + " · Each correct answer is worth 0.2. Passing grade: 3.0.";
+    paintSaved();
+  }
+  function paintSaved() {
+    const el = $("rSaved");
+    if (saveOk === true) el.textContent = "Your result was sent to your teacher.";
+    else if (saveOk === false) el.textContent = "Take a screenshot of this screen and send it to your teacher.";
+    else el.textContent = "";
+  }
+
+  /* ---------- anti-cheating ---------- */
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "hidden" || !S || S.phase !== "question") return;
+    S.exits++;
+    answer(-1, "left");
+    if (S.exits >= MAX_EXITS) { finish("exits"); warn(true); }
+    else { save(); warn(false); }
+  });
+  function warn(closed) {
+    $("warnTitle").textContent = closed ? "The quiz is closed" : `Warning ${S.exits} of ${MAX_EXITS}`;
+    $("warnText").textContent = closed
+      ? "You left the page 3 times. Your grade uses the answers you gave before."
+      : `You left the quiz page, so this question counts as wrong. If you leave ${MAX_EXITS - S.exits === 1 ? "one more time" : (MAX_EXITS - S.exits) + " more times"}, the quiz ends.`;
+    $("warnOverlay").hidden = false;
+    $("warnOk").focus();
+  }
+  $("warnOk").addEventListener("click", () => { $("warnOverlay").hidden = true; });
+  const inExam = () => S && S.phase !== "done" && !$("vQuiz").hidden;
+  ["copy", "cut", "paste", "contextmenu", "dragstart", "selectstart"].forEach((ev) =>
+    document.addEventListener(ev, (e) => { if (inExam() || (ev !== "paste" && !$("vResult").hidden)) e.preventDefault(); }));
+  document.addEventListener("keydown", (e) => {
+    const k = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && ["c", "x", "a", "p", "s", "u", "f"].includes(k) && $("vStart").hidden) { e.preventDefault(); return; }
+    if (k === "f12") { e.preventDefault(); return; }
+    if (!$("warnOverlay").hidden) { if (k === "enter" || k === "escape") { e.preventDefault(); $("warnOverlay").hidden = true; } return; }
+    if (!inExam()) return;
+    if (S.phase === "question" && ["1", "2", "3", "4", "a", "b", "c", "d"].includes(k)) {
+      const pos = "1234".includes(k) ? Number(k) - 1 : "abcd".indexOf(k);
+      if (pos < current().perm.length) { e.preventDefault(); answer(pos, "answer"); }
+    } else if (S.phase === "feedback" && k === "enter") { e.preventDefault(); next(); }
+  });
+
+  /* ---------- results store (optional) ---------- */
+  async function remoteStart() {
+    if (!db || !myId) { saveOk = false; return; }
+    try { await db.doc("results/" + myId).set({ name: S.name, status: "started", startedAt: S.startedAt }); saveOk = true; }
+    catch (e) { saveOk = false; }
+  }
+  async function remoteFinish() {
+    if (!db || !myId) { saveOk = false; paintSaved(); return; }
+    try {
+      await db.doc("results/" + myId).set({
+        name: S.name, status: "finished", correct: S.correct, total: TOTAL, grade: Number(grade(S.correct)),
+        exits: S.exits, ended: S.ended, startedAt: S.startedAt, finishedAt: S.finishedAt, code: S.code,
+        marks: S.answers.map((a) => (a.ok ? "1" : "0")).join("")
+      });
+      saveOk = true;
+    } catch (e) { saveOk = false; }
+    paintSaved();
+  }
+
+  async function initCapabilities() {
+    if (!window.claude || typeof window.claude.use !== "function") { if (S && S.phase === "done") { saveOk = false; paintSaved(); } return; }
+    const [d, u] = await Promise.all([window.claude.use("db").catch(() => null), window.claude.use("user").catch(() => null)]);
+    db = d; user = u;
+    if (user) {
+      try { myId = await user.id(); } catch (e) { myId = null; }
+      let teacher = false;
+      try { teacher = (await user.isOwner()) || (await user.canEdit()); } catch (e) {}
+      if (teacher && db) $("teacherBtn").hidden = false;
+    }
+    if (db && myId && (!S || S.phase === "done")) {
+      try {
+        const snap = await db.doc("results/" + myId).get();
+        if (snap.exists) {
+          const r = snap.data();
+          if (r.status === "finished") {
+            if (!S) { saveOk = true; renderResult(Object.assign({ exits: 0 }, r)); }
+            else { saveOk = true; paintSaved(); }
+          } else if (!S) {
+            blocked = true; refreshStart();
+            const n = $("startNotice"); n.hidden = false;
+            n.textContent = "You already started this quiz on another device or browser. Ask your teacher to reset your attempt.";
+          }
+        } else if (S && S.phase === "done") { remoteFinish(); }
+      } catch (e) {}
+    } else if (S && S.phase === "done" && !db) { saveOk = false; paintSaved(); }
+  }
+
+  /* ---------- teacher panel ---------- */
+  let unsub = null, rowsCache = [], isOwner = false;
+  $("teacherBtn").addEventListener("click", async () => {
+    if (inExam() && S.phase === "question") return;
+    $("panel").hidden = false;
+    try { isOwner = await user.isOwner(); } catch (e) { isOwner = false; }
+    if (unsub) return;
+    const t = setTimeout(() => { if (!rowsCache.length) $("rows").innerHTML = '<tr><td colspan="8" class="empty">Results cannot be reached yet. Check your connection.</td></tr>'; }, 10000);
+    unsub = db.collection("results").onSnapshot((snap) => {
+      clearTimeout(t);
+      rowsCache = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+      paintRows();
+    }, () => { clearTimeout(t); $("rows").innerHTML = '<tr><td colspan="8" class="empty">Results are not available right now.</td></tr>'; });
+  });
+  $("panelClose").addEventListener("click", () => { $("panel").hidden = true; });
+  let pendingReset = null;
+  function paintRows() {
+    const tb = $("rows"); tb.textContent = "";
+    const fin = rowsCache.filter((r) => r.status === "finished");
+    $("sCount").textContent = fin.length;
+    $("sAvg").textContent = fin.length ? (fin.reduce((s, r) => s + Number(r.grade || 0), 0) / fin.length).toFixed(1) : "–";
+    $("sPass").textContent = fin.length ? fin.filter((r) => Number(r.grade) >= 3).length : "–";
+    $("sProg").textContent = rowsCache.length - fin.length;
+    if (!rowsCache.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">No results yet. Share the link with your classmates; each finished quiz appears here.</td></tr>'; return; }
+    const sorted = rowsCache.slice().sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+    for (const r of sorted) {
+      const tr = document.createElement("tr");
+      const cell = (txt, cls) => { const td = document.createElement("td"); td.textContent = txt; if (cls) td.className = cls; tr.appendChild(td); return td; };
+      cell(r.name || "—");
+      const g = cell(r.status === "finished" ? Number(r.grade).toFixed(1) : "—", "num");
+      if (r.status === "finished") g.style.color = Number(r.grade) >= 3 ? "var(--teal)" : "var(--clay)";
+      cell(r.status === "finished" ? `${r.correct} / ${r.total}` : "—", "num");
+      cell(r.status === "finished" ? String(r.exits) : "—", "num");
+      cell(r.status === "finished" ? (r.ended === "exits" ? "Closed (3 exits)" : "Finished") : "In progress");
+      cell(r.finishedAt ? new Date(r.finishedAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) : "—");
+      cell(r.code || "—").style.fontFamily = "var(--f-mono)";
+      const td = document.createElement("td");
+      if (isOwner) {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "btn small " + (pendingReset === r.id ? "danger" : "ghost");
+        b.textContent = pendingReset === r.id ? "Confirm reset" : "Reset";
+        b.addEventListener("click", async () => {
+          if (pendingReset !== r.id) { pendingReset = r.id; paintRows(); return; }
+          pendingReset = null; b.disabled = true;
+          try { await db.doc("results/" + r.id).delete(); } catch (e) { b.disabled = false; b.textContent = "Try again"; }
+        });
+        td.appendChild(b);
+      }
+      tr.appendChild(td);
+      tb.appendChild(tr);
+    }
+  }
+
+  /* ---------- boot ---------- */
+  function start(hotData) {
+    const fromHot = hotData && hotData.S;
+    S = fromHot ? hotData.S : load();
+    if (S && (S.v !== 1 || !Array.isArray(S.order))) S = null;
+    if (!S) show("vStart");
+    else if (S.phase === "done") renderResult();
+    else if (S.phase === "question" && !fromHot) {
+      // reloaded in the middle of a question: that question is lost
+      S.answers.push({ p: -1, ok: false, why: "reload" }); S.phase = "feedback"; save(); renderQuiz();
+    } else renderQuiz();
+    refreshStart();
+    initCapabilities();
+  }
+  window.claude?.hot?.snapshot?.(() => ({ S }));
+  window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
+</body></html>

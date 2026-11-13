@@ -210,13 +210,22 @@ tr:last-child td { border-bottom: 0; }
   .fb .btn { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+.chk { margin: 6px 0 28px; display: grid; gap: 12px; }
+.chk-h { font-family: var(--f-display); font-size: 19px; margin: 10px 0 0; }
+.chk-p { margin: 0; color: var(--muted); font-size: 14px; max-width: 75ch; }
+.chk-p em { color: var(--teal); }
+.chk-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center; }
+.chk-row > * { min-width: 0; }
+.chk-out { border-radius: 12px; padding: 12px 14px; border: 2px solid var(--teal); background: var(--ok-bg); font-weight: 600; }
+.chk-out.bad { border-color: var(--clay); background: var(--bad-bg); }
+@media (max-width: 760px) { .chk-row { grid-template-columns: 1fr; } }
 </style>
 
 <div class="bands" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="wrap">
   <div class="topbar">
     <div class="brand"><span class="dots" aria-hidden="true"><b></b><b></b><b></b></span> English Quiz · A2</div>
-    <button class="btn ghost" id="teacherBtn" hidden>Teacher results</button>
+    <button class="btn ghost" id="teacherBtn">Teacher results</button>
   </div>
 
   <!-- START -->
@@ -325,9 +334,29 @@ tr:last-child td { border-bottom: 0; }
   <div class="bands" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="wrap">
     <div class="topbar">
-      <div><div class="eyebrow">Only you can see this</div><h2>Class results</h2></div>
+      <div><div class="eyebrow">Teacher area · Área del profesor</div><h2>Class results</h2></div>
       <button class="btn ghost" id="panelClose" type="button">Back to quiz</button>
     </div>
+    <section class="chk">
+      <h3 class="chk-h">Check a student's result code</h3>
+      <p class="chk-p">Students send you a screenshot of their final screen. Type their full name and their result code to confirm the grade is real. <em>Escribe el nombre completo y el código del estudiante para comprobar su nota.</em></p>
+      <form class="chk-row" id="chkForm" autocomplete="off">
+        <input class="text" id="chkName" type="text" maxlength="60" placeholder="Student full name" aria-label="Student full name">
+        <input class="text" id="chkCode" type="text" maxlength="24" placeholder="Result code" aria-label="Result code">
+        <button class="btn" type="submit">Check</button>
+      </form>
+      <div class="chk-out" id="chkOut" hidden></div>
+      <h3 class="chk-h">Checked results · <span id="lCount">0</span> students · average <span id="lAvg">–</span></h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Name</th><th>Grade</th><th>Correct</th><th>Exits</th><th>Status</th><th>Finished</th><th></th></tr></thead>
+          <tbody id="lRows"></tbody>
+        </table>
+      </div>
+      <p class="chk-p">This list is saved only on this device. <em>Esta lista se guarda solo en este dispositivo.</em></p>
+    </section>
+    <div id="savedBox" hidden>
+      <h3 class="chk-h">Saved results (students who took it with access to your quiz)</h3>
     <div class="summary">
       <div class="stat"><b id="sCount">0</b><span>finished</span></div>
       <div class="stat"><b id="sAvg">–</b><span>class average</span></div>
@@ -341,6 +370,7 @@ tr:last-child td { border-bottom: 0; }
       </table>
     </div>
     <p class="meta" id="panelNote">Reset removes a student's attempt so they can take the quiz again.</p>
+    </div>
   </div>
 </div>
 
@@ -474,7 +504,7 @@ tr:last-child td { border-bottom: 0; }
     while (S.answers.length < TOTAL) S.answers.push({ p: -1, ok: false, why: "closed" });
     S.idx = TOTAL - 1; S.phase = "done"; S.ended = reason; S.finishedAt = Date.now();
     S.correct = S.answers.filter((a) => a.ok).length;
-    S.code = hash(`${S.name}|${S.correct}|${S.exits}|${S.finishedAt}`).slice(0, 4) + "-" + hash(`${S.finishedAt}|${S.name}`).slice(0, 4);
+    S.code = makeCode(S);
     save();
     remoteFinish();
     renderResult();
@@ -496,7 +526,7 @@ tr:last-child td { border-bottom: 0; }
     const grid = $("rGrid"); grid.textContent = "";
     const marks = r.answers ? r.answers.map((a) => a.ok) : (r.marks || "").split("").map((x) => x === "1");
     marks.forEach((ok, i) => { const el = document.createElement("i"); el.className = ok ? "ok" : "bad"; el.textContent = i + 1; el.title = `Question ${i + 1}: ${ok ? "correct" : "wrong"}`; grid.appendChild(el); });
-    $("rCode").textContent = r.code || "—";
+    $("rCode").textContent = r.finishedAt ? makeCode(r) : (r.code || "—");
     const d = new Date(r.finishedAt);
     const mins = Math.max(1, Math.round((r.finishedAt - r.startedAt) / 60000));
     $("rMeta").textContent = `Finished ${d.toLocaleDateString()} at ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · ${mins} min` + (r.ended === "exits" ? " · Quiz closed: left the page 3 times." : "") + " · Each correct answer is worth 0.2. Passing grade: 3.0.";
@@ -505,7 +535,7 @@ tr:last-child td { border-bottom: 0; }
   function paintSaved() {
     const el = $("rSaved");
     if (saveOk === true) el.textContent = "Your result was sent to your teacher.";
-    else if (saveOk === false) el.textContent = "Take a screenshot of this screen and send it to your teacher.";
+    else if (saveOk === false) el.textContent = "Take a screenshot of this screen (with your name and result code) and send it to your teacher. · Toma una captura de esta pantalla con tu nombre y tu código y envíasela a tu profesor.";
     else el.textContent = "";
   }
 
@@ -528,7 +558,7 @@ tr:last-child td { border-bottom: 0; }
   $("warnOk").addEventListener("click", () => { $("warnOverlay").hidden = true; });
   const inExam = () => S && S.phase !== "done" && !$("vQuiz").hidden;
   ["copy", "cut", "paste", "contextmenu", "dragstart", "selectstart"].forEach((ev) =>
-    document.addEventListener(ev, (e) => { if (inExam() || (ev !== "paste" && !$("vResult").hidden)) e.preventDefault(); }));
+    document.addEventListener(ev, (e) => { const el = e.target && e.target.nodeType === 1 ? e.target : e.target && e.target.parentElement; if (el && el.closest && el.closest("#panel, #codeOverlay")) return; if (inExam() || (ev !== "paste" && !$("vResult").hidden)) e.preventDefault(); }));
   document.addEventListener("keydown", (e) => {
     if (!$("codeOverlay").hidden) { if (e.key === "Escape") $("codeOverlay").hidden = true; return; }
     if (!$("panel").hidden) return;
@@ -614,8 +644,11 @@ tr:last-child td { border-bottom: 0; }
   });
   async function openPanel() {
     $("panel").hidden = false;
-    if (!db) { $("rows").innerHTML = '<tr><td colspan="8" class="empty">Results are not available here. Open the quiz from your Claude account.</td></tr>'; return; }
-    try { isOwner = await user.isOwner(); } catch (e) { isOwner = false; }
+    paintChecked();
+    let canRead = false;
+    try { isOwner = user ? await user.isOwner() : false; canRead = isOwner || (user ? await user.canEdit() : false); } catch (e) { isOwner = false; }
+    $("savedBox").hidden = !(db && canRead);
+    if (!db || !canRead) return;
     if (unsub) return;
     const t = setTimeout(() => { if (!rowsCache.length) $("rows").innerHTML = '<tr><td colspan="8" class="empty">Results cannot be reached yet. Check your connection.</td></tr>'; }, 10000);
     unsub = db.collection("results").onSnapshot((snap) => {
@@ -664,6 +697,77 @@ tr:last-child td { border-bottom: 0; }
   }
 
   /* ---------- boot ---------- */
+  /* result codes: verifiable without the saved results */
+  const PREFIX = "MI", SECRET = "marimba-tiple-gaita-ocarina";
+  const EPOCH = Date.UTC(2026, 0, 1);
+  const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+  const normName = (s) => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z' -]/g, "").replace(/\s+/g, " ").trim();
+  function h32(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } h ^= h >>> 15; h = Math.imul(h, 2246822519); h ^= h >>> 13; return h >>> 0; }
+  const sig = (name, payload) => BigInt(h32(SECRET + "|" + normName(name) + "|" + payload.toString()) >>> 12);
+  const fmt = (s) => `${PREFIX}-${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8)}`;
+  function makeCode(r) {
+    const mins = Math.min(0x1FFFFFF, Math.max(0, Math.floor((Number(r.finishedAt) - EPOCH) / 60000)));
+    const payload = (BigInt(Number(r.correct) & 31) << 28n) | (BigInt(Math.min(3, Number(r.exits) || 0)) << 26n) | (BigInt(r.ended === "exits" ? 1 : 0) << 25n) | BigInt(mins);
+    let v = (payload << 20n) | sig(r.name, payload), s = "";
+    for (let i = 0; i < 11; i++) { s = B32[Number(v & 31n)] + s; v >>= 5n; }
+    return fmt(s);
+  }
+  function readCode(name, code) {
+    let s = String(code || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
+    if (s.length === 11 + PREFIX.length && s.startsWith(PREFIX)) s = s.slice(PREFIX.length);
+    s = s.replace(/O/g, "0").replace(/[IL]/g, "1");
+    if (s.length !== 11) return null;
+    let v = 0n;
+    for (const ch of s) { const i = B32.indexOf(ch); if (i < 0) return null; v = (v << 5n) | BigInt(i); }
+    const payload = v >> 20n;
+    if (sig(name, payload) !== (v & 0xFFFFFn)) return null;
+    const correct = Number((payload >> 28n) & 31n);
+    if (correct > TOTAL) return null;
+    return { name: cleanName(name).toLowerCase().replace(/(^|[\s'-])(\p{L})/gu, (m, x, y) => x + y.toUpperCase()), correct, exits: Number((payload >> 26n) & 3n), ended: Number((payload >> 25n) & 1n) ? "exits" : "completed",
+             finishedAt: EPOCH + Number(payload & 0x1FFFFFFn) * 60000, code: fmt(s) };
+  }
+  const LKEY = LS + "-checked";
+  let checked = [];
+  try { checked = JSON.parse(localStorage.getItem(LKEY) || "[]"); } catch (e) { checked = []; }
+  if (!Array.isArray(checked)) checked = [];
+  const saveChecked = () => { try { localStorage.setItem(LKEY, JSON.stringify(checked)); } catch (e) {} };
+  function paintChecked() {
+    const tb = $("lRows"); tb.textContent = "";
+    $("lCount").textContent = checked.length;
+    $("lAvg").textContent = checked.length ? (checked.reduce((s, r) => s + Number(grade(r.correct)), 0) / checked.length).toFixed(1) : "–";
+    if (!checked.length) { tb.innerHTML = '<tr><td colspan="7" class="empty">No codes checked yet. Valid codes appear here.</td></tr>'; return; }
+    for (const r of checked.slice().sort((a, b) => a.name.localeCompare(b.name))) {
+      const tr = document.createElement("tr");
+      const cell = (txt, cls) => { const td = document.createElement("td"); td.textContent = txt; if (cls) td.className = cls; tr.appendChild(td); return td; };
+      cell(r.name);
+      cell(grade(r.correct), "num").style.color = Number(grade(r.correct)) >= 3 ? "var(--teal)" : "var(--clay)";
+      cell(`${r.correct} / ${TOTAL}`, "num");
+      cell(String(r.exits), "num");
+      cell(r.ended === "exits" ? "Closed (3 exits)" : "Finished");
+      cell(new Date(r.finishedAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" }));
+      const td = document.createElement("td");
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn small ghost"; b.textContent = "Remove";
+      b.addEventListener("click", () => { checked = checked.filter((x) => x.code !== r.code); saveChecked(); paintChecked(); });
+      td.appendChild(b); tr.appendChild(td); tb.appendChild(tr);
+    }
+  }
+  $("chkForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const out = $("chkOut"), name = cleanName($("chkName").value);
+    const r = name.split(" ").length >= 2 ? readCode(name, $("chkCode").value) : null;
+    out.hidden = false;
+    if (!r) {
+      out.className = "chk-out bad";
+      out.textContent = "Not valid. Write the full name exactly as on the screenshot and the complete code. · No es válido: revisa el nombre completo y el código.";
+      return;
+    }
+    const d = new Date(r.finishedAt);
+    out.className = "chk-out";
+    out.textContent = `Valid ✓ ${r.name}: grade ${grade(r.correct)} (${r.correct}/${TOTAL}), ${r.exits} page exits, finished ${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.` + (r.ended === "exits" ? " The quiz closed after 3 exits." : "") + " Added to the list.";
+    checked = checked.filter((x) => x.code !== r.code); checked.push(r); saveChecked(); paintChecked();
+    $("chkName").value = ""; $("chkCode").value = ""; $("chkName").focus();
+  });
+
   function start(hotData) {
     const fromHot = hotData && hotData.S;
     S = fromHot ? hotData.S : load();

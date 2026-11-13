@@ -334,6 +334,20 @@ tr:last-child td { border-bottom: 0; }
   </section>
 </main>
 
+<div class="overlay" id="codeOverlay" hidden>
+  <form class="card modal" id="codeForm" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="codeTitle">
+    <div class="lb">Teacher access · Acceso del profesor</div>
+    <div class="big" id="codeTitle" style="color:inherit">Enter the code</div>
+    <p>Escribe el código para ver los resultados.</p>
+    <input class="text" id="codeInput" type="password" maxlength="40" aria-label="Teacher code" style="text-align:center">
+    <div class="hint" id="codeHint"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px">
+      <button class="btn ghost" id="codeCancel" type="button">Cancel</button>
+      <button class="btn" type="submit">Enter · Entrar</button>
+    </div>
+  </form>
+</div>
+
 <div class="overlay" id="warnOverlay" hidden>
   <div class="card modal" role="alertdialog" aria-modal="true" aria-labelledby="warnTitle">
     <div class="lb">Anti-cheating warning</div>
@@ -542,6 +556,8 @@ tr:last-child td { border-bottom: 0; }
   ["copy", "cut", "paste", "contextmenu", "dragstart", "selectstart"].forEach((ev) =>
     document.addEventListener(ev, (e) => { if (inExam() || (ev !== "paste" && !$("vResult").hidden)) e.preventDefault(); }));
   document.addEventListener("keydown", (e) => {
+    if (!$("codeOverlay").hidden) { if (e.key === "Escape") $("codeOverlay").hidden = true; return; }
+    if (!$("panel").hidden) return;
     const k = e.key.toLowerCase();
     if ((e.ctrlKey || e.metaKey) && ["c", "x", "a", "p", "s", "u", "f"].includes(k) && $("vStart").hidden) { e.preventDefault(); return; }
     if (k === "f12") { e.preventDefault(); return; }
@@ -596,9 +612,29 @@ tr:last-child td { border-bottom: 0; }
 
   /* teacher panel */
   let unsub = null, rowsCache = [], isOwner = false, pendingReset = null;
-  $("teacherBtn").addEventListener("click", async () => {
+  const CODE_HASH = "0E2SWKF";
+  let unlocked = false;
+  try { unlocked = sessionStorage.getItem(LS + "-t") === CODE_HASH; } catch (e) {}
+  $("teacherBtn").addEventListener("click", () => {
     if (inExam() && S.phase === "question") return;
+    if (unlocked) { openPanel(); return; }
+    $("codeInput").value = ""; $("codeHint").textContent = ""; $("codeHint").className = "hint";
+    $("codeOverlay").hidden = false; $("codeInput").focus();
+  });
+  $("codeCancel").addEventListener("click", () => { $("codeOverlay").hidden = true; });
+  $("codeForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (hash("t|" + $("codeInput").value.trim().toLowerCase()) !== CODE_HASH) {
+      $("codeHint").textContent = "Wrong code. Código incorrecto."; $("codeHint").className = "hint err";
+      $("codeInput").select(); return;
+    }
+    unlocked = true;
+    try { sessionStorage.setItem(LS + "-t", CODE_HASH); } catch (e) {}
+    $("codeOverlay").hidden = true; openPanel();
+  });
+  async function openPanel() {
     $("panel").hidden = false;
+    if (!db) { $("rows").innerHTML = '<tr><td colspan="8" class="empty">Results are not available here. Open the quiz from your Claude account.</td></tr>'; return; }
     try { isOwner = await user.isOwner(); } catch (e) { isOwner = false; }
     if (unsub) return;
     const t = setTimeout(() => { if (!rowsCache.length) $("rows").innerHTML = '<tr><td colspan="8" class="empty">Results cannot be reached yet. Check your connection.</td></tr>'; }, 10000);
@@ -607,7 +643,7 @@ tr:last-child td { border-bottom: 0; }
       rowsCache = snap.docs.map((d) => Object.assign({ id: d.id }, d.data()));
       paintRows();
     }, () => { clearTimeout(t); $("rows").innerHTML = '<tr><td colspan="8" class="empty">Results are not available right now.</td></tr>'; });
-  });
+  }
   $("panelClose").addEventListener("click", () => { $("panel").hidden = true; });
   function paintRows() {
     const tb = $("rows"); tb.textContent = "";
